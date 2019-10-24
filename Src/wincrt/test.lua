@@ -8,7 +8,8 @@ for j = 0, 15 do
 end
 wincrt.setattr(0x07)
 print(wincrt.getxy())
-io.read("*l")
+print(wincrt.readkey())
+wincrt.readkey()
 wincrt.clrscr()
 wincrt.gotoxy(0, 0)
 io.read("*l")

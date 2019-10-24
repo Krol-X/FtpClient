@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <conio.h>
 #include "lua.h"
 #include "lauxlib.h"
 
@@ -30,7 +31,7 @@ static int SetAttr(lua_State *L) {
 	return 0;
 }
 
-static int Clrscr(lua_State *L) {
+static int ClrScr(lua_State *L) {
 	CONSOLE_SCREEN_BUFFER_INFO con;
 	GetConsoleScreenBufferInfo(output, &con);
 	DWORD l;
@@ -41,12 +42,21 @@ static int Clrscr(lua_State *L) {
 	return 0;
 }
 
+static int ReadKey(lua_State *L) {
+	WORD key = _getwch();
+	if (key == 0xE0)
+		key = _getwch() << 8;
+	lua_pushnumber(L, key);
+	return 1;
+}
+
 static const luaL_Reg mainTable[] = {
 	{ "getxy",    GetXY   },
 	{ "gotoxy",   GotoXY  },
 	{ "getattr",  GetAttr },
 	{ "setattr",  SetAttr },
-	{ "clrscr",   Clrscr  },
+	{ "clrscr",   ClrScr  },
+	{ "readkey",  ReadKey },
 	{NULL, NULL}
 };
 
