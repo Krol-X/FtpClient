@@ -1,0 +1,8 @@
+Dev/
+*.o
+*.a
+*.def
+*.layout
+*.lib
+*.win
+Src/wincrt/*.dll
