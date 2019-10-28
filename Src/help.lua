@@ -30,7 +30,7 @@ help = {
   ["!"] = nohelp;
   cd = nohelp;
   cls = nohelp;
-  close = nohelp;
+  close = [[Close connection]];
   del = nohelp;
   dir = nohelp;
   get = nohelp;
@@ -38,9 +38,9 @@ help = {
   send = nohelp;
   status = nohelp;
   md = nohelp;
-  open = nohelp;
-  user = nohelp;
-  quit = nohelp;
+  open = [=[Make connection with host: OPEN [ip] [port]]=];
+  user = [=[Login to host: USER [username] [password]]=];
+  quit = [[Close connection and exit to OS]];
 }
 -- ѕсевдонимы команд
 help["?"] = help.help

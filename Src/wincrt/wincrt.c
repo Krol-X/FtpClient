@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <conio.h>
+#define LUA_COMPAT_MODULE
 #include "lua.h"
 #include "lauxlib.h"
 

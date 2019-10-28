@@ -1,17 +1,17 @@
 [Project]
-FileName=wincrt.dev
-Name=wincrt
+FileName=wincrt53.dev
+Name=wincrt53
 Type=3
 Ver=2
 ObjFiles=
-Includes=
+Includes=p:\Prog\Soft\Lua\include\5.2\
 Libs=
 PrivateResource=
 ResourceIncludes=
 MakeIncludes=
 Compiler=-DBUILDING_DLL=1_@@_
 CppCompiler=-DBUILDING_DLL=1_@@_
-Linker=lua5.1.lib_@@_
+Linker=p:\Prog\Soft\Lua\lib\dynamic\liblua53.a_@@_
 IsCpp=0
 Icon=
 ExeOutput=
@@ -19,7 +19,7 @@ ObjectOutput=
 LogOutput=
 LogOutputEnabled=0
 OverrideOutput=0
-OverrideOutputName=wincrt.dll
+OverrideOutputName=wincrt53.dll
 HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
@@ -37,7 +37,7 @@ Minor=0
 Release=0
 Build=0
 LanguageID=1033
-CharsetID=1252
+CharsetID=1253
 CompanyName=
 FileVersion=1.0.0.0
 FileDescription=Developed using the Dev-C++ IDE
