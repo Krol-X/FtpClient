@@ -5,4 +5,4 @@ Dev/
 *.layout
 *.lib
 *.win
-Src/wincrt/*.dll
+Lib/WinCrt/*.dll

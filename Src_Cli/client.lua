@@ -4,6 +4,10 @@
   2. Реализация остальных команд
   3. Реализация cmdline()
 ]]--
+require "luaver"
+package.path  = "../?.lua;"..package.path;
+package.cpath = "../?.dll;../?5".._VERSION_L()..".dll;"..package.cpath
+
 require "engine"
 require "conio"
 require "help"
