@@ -6,6 +6,7 @@ require "tools"
 local conn
 stat = {
   sock = nil,
+  datasock = nil,
   host = nil,
   port = nil,
   quit = false,
@@ -74,7 +75,7 @@ function receive() --> table
     end
   else
     setattr_(clerr)
-    Error("Receive: "..err)
+    print("Receive error: "..err)
   end
   return r;
 end
@@ -86,4 +87,14 @@ function send(s)
   else
     Error_con()
   end
+end
+
+
+function data_connect(s)
+
+end
+
+
+function topath(s)
+  return s and s:trimspaces():gsub("\\", "/") or "";
 end

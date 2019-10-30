@@ -55,3 +55,8 @@ function os.delay(ms)
   local t0 = os.clock()
   while os.clock()-t0 < ms do end
 end
+
+
+function string.setchar(str, pos, x)
+    return ("%s%s%s"):format(str:sub(1,pos-1), x, str:sub(pos+1))
+end

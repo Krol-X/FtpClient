@@ -11,10 +11,12 @@ clok    = 0x0A
 clinter = 0x0E
 clerr   = 0x0C
 
+
 clrscr_ = function()
   wincrt.clrscr()
   wincrt.gotoxy(0, 0)
 end
+
 
 read_ =
 --[ Common variant
@@ -32,6 +34,7 @@ function(s)
   end
 end
 --]]
+
 
 readn_ =
 --[ Common variant
@@ -51,24 +54,31 @@ function(s)
 end
 --]]
 
+
 readpass_ =
---[ Common variant
-function() return io.read('*l') end
+--[[ Common variant
+read_
 --]]
---[[ Сonsole variant
-function()
-  local s = ""; local key, x, y
+--[[ Windows variant ?
+echo.|set /p="Password: "
+--]]
+--[ Console variant
+function(s)
+  io.write(s); s = ""
+  local key, x, y
   repeat
-    key = readkey()%256
+    key = readkey_()%256
     if key >= 32 then
-      s = s + key
+      s = s..string.char(key)
     elseif key == 8 and #s > 0 then
-      s = s:sub(s, 1, #s-1)
+      s = s:sub(1, #s-1)
     end
-  until key = 13
+  until key == 13
+  print()
   return s
 end
 --]]
+
 
 -- Вывод ошибок
 function Error(s) wincrt.setattr(0x0C) print("Error: "..s) end

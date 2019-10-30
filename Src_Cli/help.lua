@@ -2,8 +2,8 @@ local nohelp = "Sorry, help for this command is not available in this version!"
 
 help = {
   __help = function(s)
-    local start = not s
-    if start or s == "" then
+    local start = (s == help)
+    if not s or start then
       print("Ftp-Client by _KROL")
       if start then return end
       print("Availble commands:")

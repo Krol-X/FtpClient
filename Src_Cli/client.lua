@@ -15,6 +15,8 @@ require "help"
 -- Основные команды
 command = {
   open = function(s)
+    if stat.sock then command.close(true) end
+    s = s or ""
     local host, port
     local i, j = s:find("[^%s]+")
     if i then
@@ -30,21 +32,19 @@ command = {
   end;
 
   close = function(s)
-    if stat.sock then
-      send("quit")
-      answer.print(receive())
-      stat.sock:close()
-      stat.sock = nil
-    else
-      if not s or s == "" then Error_con() end
-    end
+    if not stat.sock then if s~=true then Error_con() end return end
+    send("quit")
+    answer.print(receive())
+    stat.sock:close()
+    stat.sock = nil
   end;
 
   user = function(s)
+    if not stat.sock then Error_con() return end
     s = s or read_("USER: ")
-    send("usr "..s)
+    send("user "..s)
     local r = receive()
-    t = tostring(answer.print(r))
+    t = answer.print(r)
     if t == 331 then
       r = readpass_("PASS: ")
       send("pass "..r)
@@ -69,30 +69,46 @@ command = {
   end;
 --]]
 
+  pwd = function(s)
+    if not stat.sock then Error_con() return end
+    send("pwd "..topath(s))
+    answer.print(receive())
+  end;
+
   dir = function(s)
-    -- MAKEIT
+    if not stat.sock then Error_con() return end
+    data_connect()
+    send("list "..topath(s))
+    print(data_receive())
   end;
 
   cd = function(s)
+    if not stat.sock then Error_con() return end
     send("cwd "..topath(s))
     answer.print(receive())
   end;
 
   md = function(s)
+    if not stat.sock then Error_con() return end
     send("mkd "..topath(s))
     answer.print(receive())
   end;
 
   del = function(s)
-    send("mkd "..topath(s))
+    if not stat.sock then Error_con() return end
+    send("dele "..topath(s))
     answer.print(receive())
   end;
 
   get = function(s)
+    if not stat.sock then Error_con() return end
+    data_connect()
     -- MAKEIT
   end;
 
   send = function(s)
+    if not stat.sock then Error_con() return end
+    data_connect()
     -- MAKEIT
   end;
 
@@ -126,7 +142,7 @@ end cmdline()
 function main()
   oldattr = getattr_()
   io.write("Welcome to ")
-  command.help();
+  command.help(help);
   repeat
     setattr_(clnorm)
     s = read_("ftp> ")
@@ -137,7 +153,8 @@ function main()
       if i then
         cmd = s:sub(i, j):lower()
         if command[cmd] then
-          command[cmd](s:sub(j+1):trimspaces())
+          s = s:sub(j+1):trimspaces()
+          command[cmd](s~="" and s or nil)
         else
           Error_cmd(cmd)
         end
