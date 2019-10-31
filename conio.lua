@@ -56,13 +56,13 @@ end
 
 
 readpass_ =
---[ Common variant
+--[[ Common non-protected variant
 read_
 --]]
 --[[ Windows variant ?
 echo.|set /p="Password: "
 --]]
---[[ Console variant
+--[ Console variant
 function(s)
   io.write(s); s = ""
   local key, x, y
@@ -79,7 +79,7 @@ function(s)
 end
 --]]
 
-function prints(t) for i=1, #t do print(t[i]) end end
+function prints(t) t = t or {}; for i=1, #t do print(t[i]) end end
 function printcl(cl, s) setattr_(cl) print(s) end
 function printclb(b, cl, s)
   b  = b and 1 or 2

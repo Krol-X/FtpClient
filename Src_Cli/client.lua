@@ -7,6 +7,7 @@
 require "luaver"
 package.path  = "../?.lua;"..package.path;
 package.cpath = "../?.dll;../?5".._VERSION_L()..".dll;"..package.cpath
+block_size = 1024
 
 require "engine"
 require "conio"
@@ -79,7 +80,11 @@ command = {
     if not control:connected() then Error_con() return end
     if not data_connect() then return end
     control:sendln("list "..topath(s))
-    prints(data:receive('t'))
+    local x = answer.highcode(answer.print(control:receive()))
+    if x == 1 or x == 2 then
+      prints(data:receive())
+    end
+    data:disconnect()
   end;
 
   cd = function(s)
@@ -103,13 +108,65 @@ command = {
   get = function(s)
     if not control:connected() then Error_con() return end
     if not data_connect() then return end
-    -- MAKEIT
+    s = topath(s)
+    control:sendln("retr "..s)
+    local x = answer.highcode(answer.print(control:receive()))
+    if x == 1 or x == 2 then
+      local _, fn = f_path_name(s)
+      local f = io.open(fn, "wb")
+      setattr_(clpre); io.write("Downloading file")
+      local err, fsz = 0, 0
+      repeat
+        s, err = data:receive(block_size)
+        if s then
+          f:write(s)
+          fsz = fsz + #s
+          io.write('.')
+        end
+      until err
+      print()
+      setattr_(clok)
+      print('Received '..fsz..' bytes of "'..fn..'".')
+      f:close()
+      answer.print(control:receive())
+    end
+    data:disconnect()
   end;
 
   send = function(s)
     if not control:connected() then Error_con() return end
     if not data_connect() then return end
-    -- MAKEIT
+    s = topath(s)
+    local _, fn = f_path_name(s)
+    local f = io.open(s, "rb")
+    if f then
+      control:sendln("stor "..fn)
+      local x = answer.highcode(answer.print(control:receive()))
+      if x == 1 or x == 2 then
+        setattr_(clpre); io.write("Uploading file")
+        local sz, fsz = 0, 0
+        repeat
+          s = f:read(block_size)
+          if s then
+            fsz = fsz + #s
+            sz = data:send(s)
+            if sz ~= #s then
+              Error_up(fn)
+              f:close(); return false
+            end
+            io.write('.')
+          end
+        until not s
+        print()
+        setattr_(clok)
+        print('Transfered '..fsz..' bytes of "'..fn..'".')
+        answer.print(control:receive())
+      end
+      f:close()
+    else
+      Error_nofile(s)
+    end
+    data:disconnect()
   end;
 
   ["!"] = function(s)

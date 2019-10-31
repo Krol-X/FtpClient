@@ -4,7 +4,7 @@ help = {
   __help = function(s)
     local start = (s == help)
     if not s or start then
-      print("Ftp-Client by _KROL")
+      print([[Simple Ftp-Client by _KROL]])
       if start then return end
       print("Availble commands:")
       local x = {}

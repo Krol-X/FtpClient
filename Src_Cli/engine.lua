@@ -16,10 +16,17 @@ function Error(s) setattr_(clerr) print("Error: "..s) end --> nil
 function Error_cmd(s) Error('Unknown Command "'..s..'"') end --> nil
 function Error_con()  Error("Client is not connected!") end --> nil
 function Error_cond() Error("Couldn't connect to data socket!") end --> nil
+function Error_nofile(s) Error('File "'..s..'" not exists!') end
+function Error_up(s)  Error('Upload file "'..s..'" error!') end
 
 
 function topath(s) --> string
   return s and s:trimspaces():gsub("\\", "/") or "";
+end
+
+
+function f_path_name(s) --> string(path), string(filename)
+  return s:match("^%s*(.-)([^\\/]*)$")
 end
 
 
@@ -28,6 +35,12 @@ answer = {
     local i, j = s:find("([^%s-]+)")
     code = assert(tonumber(s:sub(i, j)))
     return code, s:sub(j)
+  end;
+  highcode = function(x)
+    if type(x) == "string" then
+      x = answer.unpack(x)
+    end; x = x/100
+    return x-x%1
   end;
   colorof = function(code) --> number
     if code >= 100 and code < 200 then
@@ -68,15 +81,20 @@ address = {
 local data_con = false
 function data_connect() --> boolean
   local s, err
-  if data_con then
-    data:connect()
-  else
+  if data:connected() then return end
+--if data_con then
+--  data:connect()
+--else
     control:sendln("pasv")
     s, err = control:receive('s')
-  end
-  if err or not data:connect(address.getip_pasv(s)) then
-    Error_cond(); return false
-  end
+    if answer.highcode(s) == 2 then
+      if err or not data:connect(address.getip_pasv(s)) then
+        Error_cond(); return false
+      end
+    else
+      return false
+    end
+--end
   answer.print(control:receive())
   data_con = data:connected()
   return true
