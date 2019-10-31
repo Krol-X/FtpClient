@@ -56,13 +56,13 @@ end
 
 
 readpass_ =
---[[ Common variant
+--[ Common variant
 read_
 --]]
 --[[ Windows variant ?
 echo.|set /p="Password: "
 --]]
---[ Console variant
+--[[ Console variant
 function(s)
   io.write(s); s = ""
   local key, x, y
@@ -78,6 +78,21 @@ function(s)
   return s
 end
 --]]
+
+function prints(t) for i=1, #t do print(t[i]) end end
+function printcl(cl, s) setattr_(cl) print(s) end
+function printclb(b, cl, s)
+  b  = b and 1 or 2
+  cl = type(cl)=="table" and (#cl==2 and cl or {cl[1], cl[1]})
+       or type(cl)=="number" and {cl, cl}
+       or {clok, clerr}
+  s  = type(s)=="table" and (#s==2 and s or {s[1], s[1]})
+       or type(s)=="string" and {s, s}
+       or {tostring(s), tostring(s)}
+  setattr_(cl[b])
+  print(s[b])
+end
+
 
 
 -- Вывод ошибок

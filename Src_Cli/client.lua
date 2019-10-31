@@ -15,46 +15,46 @@ require "help"
 -- Основные команды
 command = {
   open = function(s)
-    if stat.sock then command.close(true) end
     s = s or ""
-    local host, port
-    local i, j = s:find("[^%s]+")
-    if i then
-      host = s:sub(i, j):trimspaces()
-      port = s:sub(j+2):trimspaces()
-    end
-    if not i or host == "" then host = read_("HOST = ") end
+    local host, port = s:trimspaces():match("(.+)%s+(%d+)$")
+    if not host and s ~= "" then host = s end
+    host, port = host or "", port or ""
+    if host == "" then host = read_("HOST = ") end
     if not tonumber(port) then port = readn_("PORT = ") end
-    i = connect(host, port)
-    setattr_(i and clok or clerr)
-    print(i and "Connected succeful!" or "Connection error!")
-    if i then answer.print(receive()) end
+    s = control:connect(host, port)
+    printclb(s, nil, {"Connected succeful!", "Connection error!"})
+    if s then
+      answer.print(control:receive())
+    end
   end;
 
   close = function(s)
-    if not stat.sock then if s~=true then Error_con() end return end
-    send("quit")
-    answer.print(receive())
-    stat.sock:close()
-    stat.sock = nil
+    if control:connected() then
+      control:sendln("quit")
+      answer.print(control:receive())
+      data:disconnect()
+      control:disconnect()
+    else
+      if s~=true then Error_con() end
+    end
   end;
 
   user = function(s)
-    if not stat.sock then Error_con() return end
+    if not control:connected() then Error_con() return end
     s = s or read_("USER: ")
-    send("user "..s)
-    local r = receive()
+    control:sendln("user "..s)
+    local r = control:receive()
     t = answer.print(r)
     if t == 331 then
       r = readpass_("PASS: ")
-      send("pass "..r)
-      local r = receive()
+      control:sendln("pass "..r)
+      local r = control:receive()
       answer.print(r)
     end
   end;
 
   status = function(s)
-    print("Connected: "..(stat.sock and "true" or "false")..';', "Type: "..stat.type)
+    print("Connected: "..tostring(control:connected())..';', "Type: "..stat.type)
   end;
 
 --[[
@@ -70,45 +70,45 @@ command = {
 --]]
 
   pwd = function(s)
-    if not stat.sock then Error_con() return end
-    send("pwd "..topath(s))
-    answer.print(receive())
+    if not control:connected() then Error_con() return end
+    control:sendln("pwd "..topath(s))
+    answer.print(control:receive())
   end;
 
   dir = function(s)
-    if not stat.sock then Error_con() return end
-    data_connect()
-    send("list "..topath(s))
-    print(data_receive())
+    if not control:connected() then Error_con() return end
+    if not data_connect() then return end
+    control:sendln("list "..topath(s))
+    prints(data:receive('t'))
   end;
 
   cd = function(s)
-    if not stat.sock then Error_con() return end
-    send("cwd "..topath(s))
-    answer.print(receive())
+    if not control:connected() then Error_con() return end
+    control:sendln("cwd "..topath(s))
+    answer.print(control:receive())
   end;
 
   md = function(s)
-    if not stat.sock then Error_con() return end
-    send("mkd "..topath(s))
-    answer.print(receive())
+    if not control:connected() then Error_con() return end
+    control:sendln("mkd "..topath(s))
+    answer.print(control:receive())
   end;
 
   del = function(s)
-    if not stat.sock then Error_con() return end
-    send("dele "..topath(s))
-    answer.print(receive())
+    if not control:connected() then Error_con() return end
+    control:sendln("dele "..topath(s))
+    answer.print(control:receive())
   end;
 
   get = function(s)
-    if not stat.sock then Error_con() return end
-    data_connect()
+    if not control:connected() then Error_con() return end
+    if not data_connect() then return end
     -- MAKEIT
   end;
 
   send = function(s)
-    if not stat.sock then Error_con() return end
-    data_connect()
+    if not control:connected() then Error_con() return end
+    if not data_connect() then return end
     -- MAKEIT
   end;
 

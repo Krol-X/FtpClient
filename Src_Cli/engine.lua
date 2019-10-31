@@ -1,32 +1,35 @@
-socket = require "socket"
+require "Sock"
 require "conio"
 require "tools"
 
 -- Состояние программы
-local conn
+control = Sock:new()
+data    = Sock:new()
 stat = {
-  sock = nil,
-  datasock = nil,
-  host = nil,
-  port = nil,
-  quit = false,
-  type = "I",
+  quit    = false,
+  type    = "I",
 }
 
 
 -- Вывод ошибок
-function Error(s) setattr_(clerr) print("Error: "..s) end
-function Error_cmd(s) Error('Unknown Command "'..s..'"') end
-function Error_con()  Error('Client is not connected!') end
+function Error(s) setattr_(clerr) print("Error: "..s) end --> nil
+function Error_cmd(s) Error('Unknown Command "'..s..'"') end --> nil
+function Error_con()  Error("Client is not connected!") end --> nil
+function Error_cond() Error("Couldn't connect to data socket!") end --> nil
+
+
+function topath(s) --> string
+  return s and s:trimspaces():gsub("\\", "/") or "";
+end
 
 
 answer = {
-  unpack = function(s) --> number, s
+  unpack = function(s) --> number, string
     local i, j = s:find("([^%s-]+)")
     code = assert(tonumber(s:sub(i, j)))
     return code, s:sub(j)
   end;
-  colorof = function(code)
+  colorof = function(code) --> number
     if code >= 100 and code < 200 then
       return clpre
     elseif code >= 200 and code < 300 then
@@ -39,6 +42,7 @@ answer = {
   end;
   print = function(t) --> number
     local r
+    t = type(t) ~= "table" and {t} or t
     table.foreach(t, function(i, s)
       local c, ss = answer.unpack(s)
       setattr_(answer.colorof(c))
@@ -50,51 +54,30 @@ answer = {
 }
 
 
-function connect(host, port) --> boolean
-  local sock = socket.connect(host, port)
-  stat.sock = sock
-  if sock then
-    --sock:setoption("tcp-nodelay", true)
-    sock:settimeout(1.0)
-  end
-  stat.host = sock and host
-  stat.port = sock and port
-  return sock ~= nil
-end
+local ippat = "(%d+)%.(%d+)%.(%d+)%.(%d+)"
+address = {
+  isip = function (s) local i, j = s:find(ippat); return i == 1 and j == #s end; --> boolean
+  splitip = function(s) return s:match(ippat) end; --> ip3, ip2, ip1, ip0
+  getip_pasv = function(s) --> string, number
+    local d, c, b, a, y, x = s:match("(%d+),(%d+),(%d+),(%d+),(%d+),(%d+)")
+    return d..'.'..c..'.'..b..'.'..a, y*256+x
+  end;
+}
 
 
-function receive() --> table
-  local sock = stat.sock; local r = {}
-  if not sock then Error_con() end
-  local s, err = sock:receive("*l")
-  if not err then
-    r[#r+1] = s
-    while not err and s:find("-") do
-      s, err = sock:receive("*l")
-      r[#r+1] = s
-    end
+local data_con = false
+function data_connect() --> boolean
+  local s, err
+  if data_con then
+    data:connect()
   else
-    setattr_(clerr)
-    print("Receive error: "..err)
+    control:sendln("pasv")
+    s, err = control:receive('s')
   end
-  return r;
-end
-
-
-function send(s)
-  if stat.sock then
-    stat.sock:send(s..'\x0D\x0A')
-  else
-    Error_con()
+  if err or not data:connect(address.getip_pasv(s)) then
+    Error_cond(); return false
   end
-end
-
-
-function data_connect(s)
-
-end
-
-
-function topath(s)
-  return s and s:trimspaces():gsub("\\", "/") or "";
+  answer.print(control:receive())
+  data_con = data:connected()
+  return true
 end
