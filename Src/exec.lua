@@ -1,5 +1,5 @@
 return {
-  help = [["!<...>" or "exec <...>" - execute host OS command]];
+  help = [["exec <...>" or "!<...>" - execute host OS command]];
   main = function(args)
     os.execute(args)
     print()

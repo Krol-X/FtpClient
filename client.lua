@@ -1,4 +1,4 @@
-﻿--                            --
+--                            --
 -- Simple Ftp-Client for lua  --
 -- (C) Alex Kondratenko 2019  --
 -- mailto: krolmail@list.ru   --
@@ -72,7 +72,9 @@ local function main()
     io.setattr(color.ok)
     if s then
       local ss = s:sub(2):trimspaces()
-      if s:sub(1, 1) == '?' then
+      if s:sub(1, 1) == '~' then
+        command["raw"].main(ss)
+      elseif s:sub(1, 1) == '?' then
         command["help"].main(ss)
       elseif s:sub(1, 1) == '!' then
         command["exec"].main(ss)

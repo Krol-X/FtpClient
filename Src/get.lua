@@ -1,6 +1,7 @@
 return {
   help = [["get <file>" or "down <file>" - download file]];
   main = function(args)
+    args = args or ""
     local path, name, ext = string.splitpath(args)
     ext = ext or ""
     ext = ext ~= "" and '.'..ext or ext

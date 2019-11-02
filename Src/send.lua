@@ -1,6 +1,7 @@
 return {
   help = [["send <name>" or "up <name>" - upload file to server]];
   main = function(args)
+    args = args or ""
     local path, name, ext = string.splitpath(args)
     ext = ext or ""
     ext = ext ~= "" and '.'..ext or ext
@@ -14,7 +15,7 @@ return {
       if not data:connect() then Error_dcon() f:close() return end
       local x = f:read('*a')
       y = data:send(x)
-      print(table.concat{"Transfered ", y, ' bytes of "', name, ext, '" with size', #x})
+      print(table.concat{"Transfered ", y, ' bytes of "', name, ext, '" with size ', #x, " bytes"})
       f:close()
       answer.print(control:receive())
       data:disconnect()

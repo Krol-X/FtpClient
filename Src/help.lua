@@ -1,12 +1,13 @@
 local list, cols, width = {}, 1, width
-local shrink = {['?'] = "help", ['!'] = "exec"}
+local shrink = {['~'] = "raw", ['?'] = "help", ['!'] = "exec"}
 return {
-  help = [["HELP <command>" or "?<command>" - specific command help]];
+  help = [["help <command>" or "?<command>" - specific command help]];
   init = function(args)
     args = args or command
     for k, v in pairs(args) do
       table.insert(list, k)
     end
+    table.insert(list, '~')
     table.insert(list, '?')
     table.insert(list, '!')
     table.sort(list, function(a, b) return a<b end)

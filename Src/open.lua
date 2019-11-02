@@ -5,6 +5,7 @@ return {
     local host, port = args:trimspaces():match("(.+)%s+(%d+)$")
     if not host and args ~= "" then host = args end
     host, port = host or "", port or ""
+    io.setattr(color.inter)
     if host == "" then host = io.sread("HOST = ") end
     if not tonumber(port) then port = io.nread("PORT = ") end
     local x = control:connect(host, port)

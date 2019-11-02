@@ -1,8 +1,8 @@
 return {
-  help = [["md <name>" or "mkdir <name>" - make directory]];
+  help = [["raw <...>" or "~<...>" - send raw-command to server]];
   main = function(args)
     if control:connected() then
-      control:sendln("mkd "..s)
+      control:sendln(args)
       answer.print(control:receive())
     else
       Error_con()

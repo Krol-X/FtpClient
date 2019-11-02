@@ -2,6 +2,7 @@ return {
   help = [["user [username]" - login to server]];
   main = function(args)
     if control:connected() then
+      io.setattr(color.inter)
       args = args or io.sread("USER: ")
       control:sendln("user "..args)
       local r = control:receive()
