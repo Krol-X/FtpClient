@@ -1,5 +1,5 @@
 return {
-  help = [=[Make connection with host: OPEN [ip] [port]]=];
+  help = [["open [ip] [port]" - make connection with server]];
   main = function(args)
     args = args or ""
     local host, port = args:trimspaces():match("(.+)%s+(%d+)$")
@@ -9,7 +9,6 @@ return {
     if not tonumber(port) then port = io.nread("PORT = ") end
     local x = control:connect(host, port)
     printclb(x, nil, {"Connected succeful!", "Connection error!"})
-    control:send("TYPE I")
     if x then answer.print(control:receive()) end
   end;
 }

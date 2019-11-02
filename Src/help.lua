@@ -1,6 +1,7 @@
-local list, cols = {}, 1
+local list, cols, width = {}, 1, width
+local shrink = {['?'] = "help", ['!'] = "exec"}
 return {
-  help = [[Type "HELP <command>" or "? <command>" for specific command help]];
+  help = [["HELP <command>" or "?<command>" - specific command help]];
   init = function(args)
     args = args or command
     for k, v in pairs(args) do
@@ -18,15 +19,21 @@ return {
   main = function(args)
     io.setattr(color.inter)
     if args then
+      args = shrink[args] or args
       if command[args] then
         print(command[args].help)
       else
-        Error_cmd() -- ?
+        Error_cmd(args)
       end
     else
       print("Available commands:")
+      width = config.help.width
+      if type(width) ~= "number" or width < 1 then
+        config.help.width = stdconfig.help.width
+        width = config.help.width
+      end
       local function f(s)
-        return s..string.rep(' ', 16-math.fmod(#s, 16))
+        return s..string.rep(' ', width-math.fmod(#s, width))
       end
       local rows, sz = math.divide(#list, cols) + 1, #list
       for i=0, rows*cols-1 do
@@ -35,7 +42,7 @@ return {
         if x <= sz then
           io.write(f( list[x] ))
         else
-          io.write(string.rep(' ', 16))
+          io.write(string.rep(' ', width))
         end
         if y == cols-1 then print() end
       end

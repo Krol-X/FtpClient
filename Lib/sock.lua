@@ -17,6 +17,13 @@ function Sock:new(raw) --> class
   --sock:setoption("tcp-nodelay", true)
   end
 
+  function Sock:init(host, port) --> nil
+    host = host or self.__private.host
+    port = port or self.__private.port
+    self.__private.host = host
+    self.__private.port = port
+  end
+
   function Sock:bind(host, port) --> boolean
     host = host or self.__private.host
     port = port or self.__private.port
@@ -92,7 +99,7 @@ function Sock:new(raw) --> class
   return public
 end
 
---function Sock:extend() --> class
---  local t = {}; t.__index = t
---  return setmetatable(t, self)
---end
+function Sock:extend() --> class
+  local t = {}; t.__index = t
+  return setmetatable(t, self)
+end

@@ -1,5 +1,5 @@
 return {
-  help = [[Close connection with server]];
+  help = [["close" - close connection with server]];
   main = function(args)
     if control:connected() then
       if not args then
@@ -9,7 +9,7 @@ return {
       data:disconnect()
       control:disconnect()
     else
-      if not args then Error_con() end -- ???
+      if not args then Error_con() end
     end
   end;
 }

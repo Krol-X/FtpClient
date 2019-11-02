@@ -1,5 +1,5 @@
 return {
-  help = [=[Login to host: USER [username]]=];
+  help = [["user [username]" - login to server]];
   main = function(args)
     if control:connected() then
       args = args or io.sread("USER: ")
@@ -7,13 +7,17 @@ return {
       local r = control:receive()
       t = answer.print(r)
       if t == 331 then
-        r = io.readpass("PASS: ")
+        io.write("PASS: ")
+        r = io.readpass()
         control:sendln("pass "..r)
-        local r = control:receive()
-        answer.print(r)
+        t = answer.print(control:receive())
+      end
+      if answer.highcode(t) < 4 then
+        control:sendln("TYPE I")
+        answer.print(control:receive())
       end
     else
-      Error_con() -- ???
+      Error_con()
     end
   end;
 }

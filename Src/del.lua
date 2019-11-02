@@ -1,11 +1,11 @@
 return {
-  help = [[del <name> - delete file/directory]];
+  help = [["del <name>" or "rm <name>" - delete file/directory]];
   main = function(args)
     if control:connected() then
-        control:sendln("dele "..topath(s))
+        control:sendln("dele "..s)
         answer.print(control:receive())
     else
-        Error_con() -- ???
+        Error_con()
     end
   end;
 }

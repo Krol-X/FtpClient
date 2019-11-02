@@ -5,15 +5,17 @@ io.getxy   = wincrt.getxy
 io.gotoxy  = wincrt.gotoxy
 io.getattr = wincrt.getattr
 io.setattr = wincrt.setattr
-io.clrscr  = function(attr)
-  if attr then io.setattr(attr) end
-  wincrt.clrscr()
-  wincrt.gotoxy(0, 0)
-end
+io.clrscr  = io_compatibility and
+  function() for i=1, 25 do print() end end or
+  function(attr)
+    if attr then io.setattr(attr) end
+    wincrt.clrscr()
+    wincrt.gotoxy(0, 0)
+  end
 io.readpass = io_compatibility and
   function() return io.read("*l") end or
   function()
-    local key
+    local key, s = 0, ""
     repeat
       key = io.readkey()%256
       if key >= 32 then
@@ -27,7 +29,7 @@ io.readpass = io_compatibility and
   end
 
 
-function printcl(cl, s) setattr_(cl) print(s) end
+function printcl(cl, s) io.setattr(cl) print(s) end
 function printclb(b, cl, s)
   b  = b and 1 or 2
   cl = type(cl)=="table" and (#cl==2 and cl or {cl[1], cl[1]})

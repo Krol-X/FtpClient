@@ -1,9 +1,11 @@
---                            --
+﻿--                            --
 -- Simple Ftp-Client for lua  --
 -- (C) Alex Kondratenko 2019  --
 -- mailto: krolmail@list.ru   --
 --                            --
+-- 
 -- io_compatibility = true -- see conio.lua
+local pasv
 require "include"
 
 stdconfig = {
@@ -13,7 +15,7 @@ stdconfig = {
   clok    = 0x0A,
   clinter = 0x0E,
   clerr   = 0x0C,
-  help = { colons = 5 }
+  help = { colons = 5, width = 10 }
 }
 command = {}
 control = Sock:new()
@@ -26,6 +28,8 @@ stat = {
 
 local function setaliases()
   command.chdir = command.cd;
+  command.down  = command.get;
+  command.up    = command.send;
   command.exit  = command.quit;
   command.ls    = command.dir;
   command.mkdir = command.md;
@@ -80,7 +84,7 @@ local function main()
             s = s:sub(j+1):trimspaces()
             command[cmd].main(s~="" and s or nil)
           else
-            Error_cmd(cmd) -- ???
+            Error_cmd(cmd)
           end
         end
       end
