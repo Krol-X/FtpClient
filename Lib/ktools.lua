@@ -12,6 +12,7 @@ local lib = {}
       }
       lib.math = {
       -- divide(x, y) --> number(division), number(remain)
+--v<5.3-- tointeger(n) --> integer
       }
       lib.os = {
       -- delay(ms) --> nil
@@ -124,6 +125,12 @@ function lib.math.divide(x, y) --> number(division), number(remain)
 end
 
 
+-- Compatibility with Lua < 5.3 and round function :)
+if _VERSION_I<53 then
+  function lib.math.tointeger(n) --> integer
+    return n-n%1
+  end
+end
 
 
 ----            ----
@@ -244,7 +251,7 @@ function lib.table.unpack(t, i, n) --> ...
   i = i or 1
   n = n or #t
   if i <= n then
-    return t[i], unpack(t, i+1, n)
+    return t[i], lib.table.unpack(t, i+1, n)
   end
 end
 

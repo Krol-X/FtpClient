@@ -4,8 +4,9 @@ function _VERSION_()
 end
 
 
-function _VERSION_L()
-  return _VERSION_()*10%10
-end
+_VERSION_L = _VERSION_()*10%10
 
-_VERSION_I = _VERSION_()*10; _VERSION_I = _VERSION_I - _VERSION_I%1
+-- Compatibility with Lua < 5.3
+local toint = math.tointeger or function (x) return x end
+
+_VERSION_I = toint(_VERSION_()*10); _VERSION_I = _VERSION_I - _VERSION_I%1

@@ -1,11 +1,9 @@
---                            --
+﻿--                            --
 -- Simple Ftp-Client for lua  --
 -- (C) Alex Kondratenko 2019  --
 -- mailto: krolmail@list.ru   --
 --                            --
--- 
 -- io_compatibility = true -- see conio.lua
-local pasv
 require "include"
 
 stdconfig = {
@@ -39,7 +37,7 @@ end
 
 local function init()
   local d = lfs.readdir("src")
-  for i, x in ipairs(d) do
+  for _, x in ipairs(d) do
     local p, f, e = string.splitpath(x)
     if e == "lua" then
       command[f] = require(p..f)

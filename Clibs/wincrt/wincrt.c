@@ -1,8 +1,14 @@
 #include <windows.h>
 #include <conio.h>
-#define LUA_COMPAT_MODULE
 #include "lua.h"
 #include "lauxlib.h"
+#include "lualib.h"
+
+#if LUA_VERSION_NUM >= 502
+#  define new_lib(L, l) (luaL_newlib(L, l))
+#else
+#  define new_lib(L, l) (lua_newtable(L), luaL_register(L, NULL, l))
+#endif
 
 static HANDLE output;
 
@@ -51,7 +57,7 @@ static int ReadKey(lua_State *L) {
 	return 1;
 }
 
-static const luaL_Reg mainTable[] = {
+static const struct luaL_Reg mainTable[] = {
 	{ "getxy",    GetXY   },
 	{ "gotoxy",   GotoXY  },
 	{ "getattr",  GetAttr },
@@ -63,6 +69,6 @@ static const luaL_Reg mainTable[] = {
 
 LUALIB_API int luaopen_wincrt(lua_State *L) {
 	output = GetStdHandle(STD_OUTPUT_HANDLE);
-	luaL_openlib(L, "wincrt", mainTable, 0);
+	new_lib(L, mainTable);
 	return 1;
 }

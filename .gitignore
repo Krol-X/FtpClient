@@ -1,8 +1,14 @@
-Dev/
+# Binary files
+*.exe
+*.lib
+*.dll
 *.o
 *.a
+
+# Dev-Cpp generated files
 *.def
 *.layout
-*.lib
 *.win
-clibs/wincrt/*.dll
+
+# Other files
+*.ini

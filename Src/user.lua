@@ -6,6 +6,7 @@ return {
       args = args or io.sread("USER: ")
       control:sendln("user "..args)
       local r = control:receive()
+      if not r then control:disconnect() return end
       t = answer.print(r)
       if t == 331 then
         io.write("PASS: ")

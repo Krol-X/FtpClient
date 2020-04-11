@@ -1,4 +1,4 @@
-require "wincrt"
+wincrt = require "wincrt"
 
 x = false
 repeat

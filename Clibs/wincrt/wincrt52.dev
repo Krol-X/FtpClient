@@ -4,14 +4,14 @@ Name=wincrt52
 Type=3
 Ver=2
 ObjFiles=
-Includes=p:\Prog\Soft\Lua\include\5.2\
+Includes=C:\Lua\include\5.2\
 Libs=
 PrivateResource=
 ResourceIncludes=
 MakeIncludes=
 Compiler=-DBUILDING_DLL=1_@@_
 CppCompiler=-DBUILDING_DLL=1_@@_
-Linker=p:\Prog\Soft\Lua\lib\dynamic\liblua52.a_@@_
+Linker=C:\Lua\lib\dynamic\liblua52.a_@@_
 IsCpp=0
 Icon=
 ExeOutput=

@@ -1,7 +1,7 @@
 socket = require "socket"
 
 Sock = {}; Sock.__index = Sock
-function Sock:new(raw) --> class
+function Sock:new(raw) --> object
   local public = {}
   public.__private = {
     host = "127.0.0.1",
